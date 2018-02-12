@@ -8,7 +8,7 @@ library("tidyverse")
 #file.edit("/data/Projects/kat/Projects/Assortativity/ChAs_collated.R")
 
 # Load mESC PHiC interaction map
-PCHiC_map <- read.table(file = "/data/Projects/kat/Projects/Assortativity/PCHiC_interaction_map.txt", header = TRUE, sep = "\t")
+PCHiC_map <- read.table(file = "Data/PCHiC_interaction_map.txt", header = TRUE, sep = "\t")
 
 # Concatenate "chr" onto chromosome numbers only if not present already
 PCHiC_map$baitChr <- paste("chr", PCHiC_map$baitChr, sep = "")
@@ -39,7 +39,7 @@ PCHiC_GRange <- with(PCHiC_bed, GRanges(chr, IRanges(start, end)))
 PCHiC_GRange$ID <- paste(PCHiC_bed$chr, PCHiC_bed$start, sep = "_")
 
 # Load in peak/binarised matrix of ChIP-seq features
-binarised_all <- read.table("/data/Projects/kat/Projects/Assortativity/original_chromFeatures.txt", header = TRUE, sep = "\t")
+binarised_all <- read.table("Data/original_chromFeatures.txt", header = TRUE, sep = "\t")
 
 
 # Put binarised peaks into GRanges object 
