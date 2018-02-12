@@ -41,6 +41,7 @@ PCHiC_GRange$ID <- paste(PCHiC_bed$chr, PCHiC_bed$start, sep = "_")
 # Load in peak/binarised matrix of ChIP-seq features
 binarised_all <- read.table("/data/Projects/kat/Projects/Assortativity/original_chromFeatures.txt", header = TRUE, sep = "\t")
 
+
 # Put binarised peaks into GRanges object 
 bedepi <- with(binarised_all, GRanges(chr, ranges=IRanges(start, end),strand=Rle(strand(rep("*", nrow(binarised_all))))))
 mcols(bedepi) <- binarised_all[,-c(1,2,3)]
@@ -167,8 +168,6 @@ plot(unlist(ass_PCHiC_PP), unlist(ass_PCHiC_POE), pch = 20, xlim = c(0,0.45), co
 text(unlist(ass_PCHiC_PP),jitter(unlist(ass_PCHiC_POE), 2), pos = 2, offset = 0.2, labels = labs, cex = 0.7)
 text(unlist(ass_PCHiC_PP),jitter(unlist(ass_PCHiC_POE), 2), pos = 4, offset = 0.2, labels = labs2, cex = 0.7)
 abline(a = 0, b = 1, h = 0, v = 0)
-
-
 legend("topleft", legend = as.vector(unique(nodecats[,2])), bg = "white", pch = 20, col = cols10[as.vector(unique(nodecats[,2]))], cex = 0.7)
 
 
