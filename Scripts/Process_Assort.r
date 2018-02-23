@@ -1,20 +1,21 @@
-# Script to calculate abundances of ChIP-seq features in PHiC fragments 
+# Script to calculate abundances of ChIP-seq features in PHiC fragments
 # Divide network into promoter - promoter and promoter - other end networks
 # calculate assortativity of features in networks
 
 library("igraph")
 library("GenomicRanges")
 library("tidyverse")
+library("data.table")
 #file.edit("/data/Projects/kat/Projects/Assortativity/ChAs_collated.R")
 
 # Load mESC PHiC interaction map
-PCHiC_map <- read.table(file = "Data/PCHiC_interaction_map.txt", header = TRUE, sep = "\t")
+PCHiC_map <- read.table(file = "../Data/PCHiC_interaction_map.txt", header = TRUE, sep = "\t")
 
 # Concatenate "chr" onto chromosome numbers only if not present already
 PCHiC_map$baitChr <- paste("chr", PCHiC_map$baitChr, sep = "")
 PCHiC_map$oeChr <- paste("chr", PCHiC_map$oeChr, sep = "")
 
-# Filter interactions with > 5 in wildtype cells 
+# Filter interactions with > 5 in wildtype cells
 PCHiC_wt <- dplyr::filter(PCHiC_map, mESC_wt > 5)
 PCHiC_wt$baits <- paste(PCHiC_wt$baitChr, PCHiC_wt$baitStart, sep = "_")
 PCHiC_wt$OEs <- paste(PCHiC_wt$oeChr, PCHiC_wt$oeStart, sep = "_")
@@ -39,10 +40,10 @@ PCHiC_GRange <- with(PCHiC_bed, GRanges(chr, IRanges(start, end)))
 PCHiC_GRange$ID <- paste(PCHiC_bed$chr, PCHiC_bed$start, sep = "_")
 
 # Load in peak/binarised matrix of ChIP-seq features
-binarised_all <- read.table("Data/original_chromFeatures.txt", header = TRUE, sep = "\t")
+binarised_all <- read.table("../Data/original_chromFeatures.txt", header = TRUE, sep = "\t")
 
 
-# Put binarised peaks into GRanges object 
+# Put binarised peaks into GRanges object
 bedepi <- with(binarised_all, GRanges(chr, ranges=IRanges(start, end),strand=Rle(strand(rep("*", nrow(binarised_all))))))
 mcols(bedepi) <- binarised_all[,-c(1,2,3)]
 names(bedepi) <- paste(binarised_all[,1], binarised_all[,2], sep="_")
@@ -78,7 +79,7 @@ calc_assort <- function(G, data){
     G_epi[[names[i]]] <- delete.vertices(G, V(G)[is.na(vertex.attributes(G)[[attsel]])])
     ass[[names[i]]] <- assortativity(G_epi[[names[[i]]]], types1 = vertex.attributes(G_epi[[names[i]]])[[attsel]], directed = F)
   }
-  
+
   return(ass)
 }
 
@@ -169,8 +170,4 @@ text(unlist(ass_PCHiC_PP),jitter(unlist(ass_PCHiC_POE), 2), pos = 2, offset = 0.
 text(unlist(ass_PCHiC_PP),jitter(unlist(ass_PCHiC_POE), 2), pos = 4, offset = 0.2, labels = labs2, cex = 0.7)
 abline(a = 0, b = 1, h = 0, v = 0)
 legend("topleft", legend = as.vector(unique(nodecats[,2])), bg = "white", pch = 20, col = cols10[as.vector(unique(nodecats[,2]))], cex = 0.7)
-
-
-
-
 
