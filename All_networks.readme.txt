@@ -1,0 +1,76 @@
+# Chromatin assortativity analysis
+# Based on Pancaldi et al, 2016
+# With new chromatin features and networks by Kat Cheung
+
+######################################################################################################################
+
+# Original analysis:
+# Original figshare page from Vera: https://figshare.com/articles/ChromatinAssortativity/2009232/7
+# Github of cleaned up script and data using mESC PCHiC network: https://github.com/ricolab/Chromatin_Assortativity
+
+# Alignment files in bam format for ChIP-seq features (new and old) are here: /data/data_public/Alignments_mESCs
+# Original features were from Juan et al
+
+# Vera's scripts and data can be found in figshare as well as: /data/Projects/kat/Projects/Assortativity
+# My version of Vera's scripts are in /data/Projects/kat/Projects/Assortativity/ChAs_collated.R
+# Original plots from Vera's paper I re-generated: /data/Projects/kat/Projects/Assortativity/figures
+
+######################################################################################################################
+
+# New analysis incorporating new ChIP-seq features and orignal networks from paper
+# My scripts are in /home/kat/Repos/
+
+# mESC PCHiC and HiCap and CHIA-PET networks (from Vera's paper)
+# Assortavity plots generated with new features - H3K9me2, DNMTs, INO80 (and INO80_state), DRIP-Seq etc
+# Original features and new features were binarised together, original features were binarised using an older version of 
+# ChromHMM (with different reference genome version) so I binarised them again using ChromHMM version 1.12
+# Process new features: /home/kat/Repos/Assortativity/ChAs_new/scripts/process_new_binarised_data.r
+# plots here: /home/kat/Repos/Assortativity/ChAs_new/figures
+
+######################################################################################################################
+
+# DnaseI capture Hi-C in mESC
+# Interaction map here: /data/Projects/kat/Projects/Assortativity_new/new_networks/DnaseI_capture_hic/GSE72164_Hi-C_Merged_interactions_intervals.txt
+# Use interactions > 5 in serum grown mESCs (cells used for ChIP-seq were also grown in serum)
+# Initial DnaseI network processing: /home/kat/Repos/Assortativity/ChAs_new/scripts/dnaseI_ChAs.r
+# DnaseI network was initially subdivided by accessible - accessible and accessible - inaccessible interactions
+
+# Subdividing DnaseI network by chromatin state interactions
+# mESC chromatin states (segments with posterior probability > 0.95) from Juan et al
+# Data here: /data/Projects/kat/Projects/Assortativity_new/mESC_chromatin_states/mESC_chrom_states_95.txt
+# Fragments are assigned a chromatin state if > 50% of that fragment overlaps a specific state
+# Script here: /home/kat/Repos/Assortativity/ChAs_new/mESC_chromatin_states_ChAs/DnaseI_chromatin_states/mESCs_chromatin_states.r
+# plots here: /home/kat/Repos/Assortativity/ChAs_new/mESC_chromatin_states_ChAs/DnaseI_chromatin_states/AcAc_AcIn/
+
+# PCA and clustering
+# PCA of DnaseI subnetworks (and features) using matrix of assortativity
+# Script here: /home/kat/Repos/Assortativity/ChAs_new/scripts/ChAs_biclust_dnaseI_subnetworks.r
+
+
+######################################################################################################################
+
+# mESC cohesin and oct4 HiChip
+# Not analysed using Chicago 
+# Results very similar betweeen the two HiChIPs, potentially they need to be re-analysed
+# Script here: /home/kat/Repos/Assortativity/ChAs_new/scripts/
+
+
+######################################################################################################################
+
+# Human monocyte and neutrophil PCHiC
+# PCHiC networks here: /mnt/nocode/data_public/pchic_interaction_networks
+# Transcription factor ChIP-seq from Sanger 
+# Bam files here: /data/data_private/WP10x/monoctye_neutrophil_bam
+# Script here: /home/kat/Repos/Assortativity/ChAs_new/WP10x_monocyte_neutrophil/WP10x_monocyte_neutrophil/scripts/process_binarised_data.r
+# Plots here: /home/kat/Repos/Assortativity/human_monocyte_neutrophil_ChAs/
+
+
+######################################################################################################################
+
+# HeLa cells RNAPII and CTCF CHIA-PET
+# CHIA-PET interactions were lifted over from hg19 to hg38
+# Liftover script here: /home/kat/Repos/Assortativity/HeLa_ChiaPet_liftover.sh
+# Liftover tool here: /data/Projects/kat/Tools/UCSC_liftOver/
+# Using ChIP-seq data from John Higgins' group (mitotic and asynchronous) and also downloaded from ENCODE (asynchronous by default)
+# 3 different ChromHMM binarisation runs, combine these in R
+# Script here: /home/kat/Repos/Assortativity/HeLa_binarised_data_ChAs.r
